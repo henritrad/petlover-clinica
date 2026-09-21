@@ -2,434 +2,273 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>PetLover — Triagem Clínica (OAT1)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PetLover — Triagem Clínica</title>
     <style>
         :root {
             --primary: #0d9488;
             --primary-hover: #0f766e;
-            --primary-light: #ccfbf1;
-            --bg: #f8fafc;
+            --bg: #f1f5f9;
             --surface: #ffffff;
             --text: #0f172a;
-            --text-muted: #475569;
-            --border: #e2e8f0;
-            --border-focus: #0d9488;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
             --danger: #e11d48;
-            --danger-bg: #ffe4e6;
             --warning: #d97706;
-            --warning-bg: #fef3c7;
             --info: #0284c7;
-            --info-bg: #e0f2fe;
-            --radius: 10px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
             background-color: var(--bg);
             color: var(--text);
-            line-height: 1.5;
-            padding: 16px 12px 48px;
-            min-height: 100vh;
+            padding: 16px 12px;
+            font-size: 16px;
         }
 
-        .container {
+        .app-container {
             width: 100%;
-            max-width: 680px;
+            max-width: 500px;
             margin: 0 auto;
         }
 
-        /* Header responsivo */
         header {
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
             background: var(--surface);
-            padding: 18px;
-            border-radius: var(--radius);
+            padding: 16px;
+            border-radius: 12px;
             border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-
-        .brand {
+            margin-bottom: 16px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-        }
-
-        h1 {
-            font-size: 1.25rem;
-            color: var(--primary);
-            display: flex;
             align-items: center;
-            gap: 8px;
-            font-weight: 700;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
 
-        .author {
+        header h1 {
+            font-size: 1.15rem;
+            color: var(--primary);
+        }
+
+        header span {
             font-size: 0.75rem;
             color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
-        /* Métricas rápidas da fila */
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            padding: 10px 8px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-
-        .stat-card span {
-            display: block;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .stat-card strong {
-            font-size: 1.15rem;
-            color: var(--text);
-        }
-
-        /* Formulário Mobile-First */
         form {
             background: var(--surface);
-            padding: 18px;
-            border-radius: var(--radius);
+            padding: 16px;
+            border-radius: 12px;
             border: 1px solid var(--border);
+            margin-bottom: 20px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow);
-        }
-
-        .form-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr;
             gap: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
 
-        .field-group {
+        .form-row {
             display: flex;
-            flex-direction: column;
-            gap: 4px;
+            gap: 10px;
         }
 
-        label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
+        .form-row > * {
+            flex: 1;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 12px 14px;
+            padding: 12px;
             border: 1px solid var(--border);
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 16px; /* Evita zoom automático no iOS */
             background: #fff;
             color: var(--text);
-            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--border-focus);
-            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+            border-color: var(--primary);
         }
 
         textarea {
-            resize: vertical;
-            min-height: 70px;
+            resize: none;
+            height: 64px;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 4px;
-        }
-
-        button {
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            min-height: 46px; /* Alvo tátil ideal para telemóveis */
-        }
-
-        .btn-save {
+        .btn-submit {
             background: var(--primary);
             color: white;
-            flex: 1;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            width: 100%;
         }
 
-        .btn-save:active {
-            transform: scale(0.99);
+        .btn-submit:active {
             background: var(--primary-hover);
         }
 
-        .btn-cancel {
-            background: #f1f5f9;
-            color: var(--text-muted);
-            padding: 0 16px;
-            display: none;
-        }
-
-        .btn-cancel.visible {
-            display: inline-flex;
-        }
-
-        /* Lista de Cards da Fila */
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding: 0 4px;
-        }
-
-        .section-header h2 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-muted);
+        .list-section h2 {
+            font-size: 0.9rem;
             text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 10px;
             letter-spacing: 0.5px;
+            padding: 0 4px;
         }
 
         .list-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .card {
             background: var(--surface);
-            padding: 16px;
-            border-radius: var(--radius);
+            padding: 14px;
+            border-radius: 12px;
             border: 1px solid var(--border);
-            box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            position: relative;
-        }
-
-        .card-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
             gap: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         }
 
-        .card-main h3 {
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h3 {
             font-size: 1rem;
             color: var(--text);
-            line-height: 1.3;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .card-main h3 small {
+        .card-header h3 span.spec {
+            font-size: 0.75rem;
             font-weight: 400;
             color: var(--text-muted);
-            font-size: 0.85rem;
         }
 
         .badge {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 999px;
+            padding: 3px 8px;
+            border-radius: 6px;
             text-transform: uppercase;
-            white-space: nowrap;
         }
 
-        .badge-critico { background: var(--danger-bg); color: var(--danger); }
-        .badge-urgente { background: var(--warning-bg); color: var(--warning); }
-        .badge-rotina { background: var(--info-bg); color: var(--info); }
+        .badge-critico { background: #ffe4e6; color: var(--danger); }
+        .badge-urgente { background: #fef3c7; color: var(--warning); }
+        .badge-rotina { background: #e0f2fe; color: var(--info); }
 
-        .card-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
+        .card-body {
             font-size: 0.85rem;
             color: var(--text-muted);
-            background: #f8fafc;
-            padding: 8px 12px;
-            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
         }
 
-        .card-meta span strong {
+        .card-body strong {
             color: var(--text);
         }
 
         .card-actions {
             display: flex;
             gap: 8px;
-            padding-top: 4px;
-            border-top: 1px solid var(--border);
+            margin-top: 4px;
         }
 
         .btn-action {
             flex: 1;
-            min-height: 40px;
-            font-size: 0.85rem;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
             font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            text-align: center;
         }
 
-        .btn-edit { color: var(--text); background: #f8fafc; }
-        .btn-edit:active { background: #f1f5f9; }
-
-        .btn-delete { color: var(--danger); border-color: #fecaca; background: #fff5f5; }
-        .btn-delete:active { background: #ffe4e6; }
+        .btn-edit { color: var(--text); }
+        .btn-delete { color: var(--danger); border-color: #fecaca; background: #fff1f2; }
 
         .empty {
             text-align: center;
             color: var(--text-muted);
-            padding: 40px 16px;
+            padding: 28px 16px;
             background: var(--surface);
-            border-radius: var(--radius);
+            border-radius: 12px;
             border: 1px dashed var(--border);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        /* Desktop Breakpoint */
-        @media (min-width: 600px) {
-            body { padding: 32px 20px 64px; }
-            .grid-2 { grid-template-columns: 1fr 1fr; }
-            .card-actions { justify-content: flex-end; }
-            .btn-action { flex: initial; padding: 0 18px; }
+        /* Ajuste para ecrãs menores que 380px (telemóveis compactos) */
+        @media (max-width: 380px) {
+            .form-row { flex-direction: column; gap: 12px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="app-container">
         <header>
-            <div class="brand">
-                <h1>🐾 PetLover</h1>
-                <span class="author">Gustavo Braga</span>
-            </div>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">Módulo de Triagem Clínica Veterinária (OAT1)</p>
+            <h1>🐾 PetLover</h1>
+            <span>Gustavo Braga</span>
         </header>
 
-        <!-- Métricas Dinâmicas -->
-        <div class="stats-bar">
-            <div class="stat-card">
-                <span>Total</span>
-                <strong id="statTotal">0</strong>
-            </div>
-            <div class="stat-card">
-                <span>Críticos</span>
-                <strong id="statCritico" style="color: var(--danger);">0</strong>
-            </div>
-            <div class="stat-card">
-                <span>Urgentes</span>
-                <strong id="statUrgente" style="color: var(--warning);">0</strong>
-            </div>
-        </div>
-
-        <!-- Formulário C/U -->
         <form id="petForm">
-            <div class="form-title">
-                <span id="formTitleText">Nova Ficha (Create)</span>
-            </div>
             <input type="hidden" id="petId">
-            <div class="grid-2">
-                <div class="field-group">
-                    <label for="nome">Nome do Pet</label>
-                    <input type="text" id="nome" placeholder="Ex: Mel" required autocomplete="off">
-                </div>
-                <div class="field-group">
-                    <label for="especie">Espécie</label>
-                    <select id="especie">
-                        <option value="Canino">Canino</option>
-                        <option value="Felino">Felino</option>
-                        <option value="Outro">Outro</option>
-                    </select>
-                </div>
+            <div class="form-row">
+                <input type="text" id="nome" placeholder="Nome do Pet" required>
+                <select id="especie">
+                    <option value="Canino">Canino</option>
+                    <option value="Felino">Felino</option>
+                    <option value="Outro">Outro</option>
+                </select>
             </div>
-            <div class="grid-2">
-                <div class="field-group">
-                    <label for="tutor">Nome do Tutor</label>
-                    <input type="text" id="tutor" placeholder="Ex: Carlos Silva" required autocomplete="off">
-                </div>
-                <div class="field-group">
-                    <label for="prioridade">Prioridade de Atendimento</label>
-                    <select id="prioridade">
-                        <option value="rotina">Rotina / Verde</option>
-                        <option value="urgente">Urgente / Amarelo</option>
-                        <option value="critico">Crítico / Vermelho</option>
-                    </select>
-                </div>
+            <div class="form-row">
+                <input type="text" id="tutor" placeholder="Nome do Tutor" required>
+                <select id="prioridade">
+                    <option value="rotina">Rotina (Verde)</option>
+                    <option value="urgente">Urgente (Amarelo)</option>
+                    <option value="critico">Crítico (Vermelho)</option>
+                </select>
             </div>
-            <div class="field-group">
-                <label for="queixa">Queixa Principal / Sintomas</label>
-                <textarea id="queixa" placeholder="Descreva o motivo da consulta..." required></textarea>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="btn-cancel" id="btnCancel" onclick="cancelarEdicao()">Cancelar</button>
-                <button type="submit" class="btn-save" id="btnSubmit">Adicionar à Fila</button>
-            </div>
+            <textarea id="queixa" placeholder="Queixa principal / Sintomas..." required></textarea>
+            <button type="submit" class="btn-submit" id="btnSubmit">Adicionar à Fila</button>
         </form>
 
-        <!-- Lista R/D -->
-        <section>
-            <div class="section-header">
-                <h2>Fila de Atendimento</h2>
-                <span id="countBadge" style="font-size:0.8rem; font-weight:600; color:var(--text-muted);">0 registros</span>
-            </div>
+        <section class="list-section">
+            <h2>Fila de Atendimento</h2>
             <div id="listaPets" class="list-container"></div>
         </section>
     </div>
 
     <script>
-        // ==========================================
-        // BACK-END SIMULADO (Array & Funções Puras)
-        // ==========================================
         let dbArray = [];
 
         const BackendArrayCRUD = {
             create(item) {
-                const novo = { id: String(Date.now()), createdAt: Date.now(), ...item };
-                dbArray.unshift(novo); // Insere no topo da fila
+                const novo = { id: String(Date.now()), ...item };
+                dbArray.unshift(novo);
                 return novo;
             },
             read() {
@@ -450,79 +289,48 @@
             }
         };
 
-        // Seed inicial demonstrativo
-        BackendArrayCRUD.create({ 
-            nome: 'Thor', 
-            especie: 'Canino', 
-            tutor: 'Carlos Silva', 
-            prioridade: 'urgente', 
-            queixa: 'Vômito recorrente e apatia leve há 4h.' 
-        });
+        // Registo inicial
+        BackendArrayCRUD.create({ nome: 'Thor', especie: 'Canino', tutor: 'Carlos Silva', prioridade: 'urgente', queixa: 'Vômito e apatia' });
 
-        // ==========================================
-        // FRONT-END & UI RESPONSIVA
-        // ==========================================
         const form = document.getElementById('petForm');
         const listaDiv = document.getElementById('listaPets');
         const btnSubmit = document.getElementById('btnSubmit');
-        const btnCancel = document.getElementById('btnCancel');
-        const formTitleText = document.getElementById('formTitleText');
 
         function traduzirPrioridade(p) {
-            if (p === 'critico') return { label: 'Crítico / Vermelho', cls: 'badge-critico' };
-            if (p === 'urgente') return { label: 'Urgente / Amarelo', cls: 'badge-urgente' };
-            return { label: 'Rotina / Verde', cls: 'badge-rotina' };
-        }
-
-        function atualizarEstatisticas(itens) {
-            document.getElementById('statTotal').textContent = itens.length;
-            document.getElementById('statCritico').textContent = itens.filter(i => i.prioridade === 'critico').length;
-            document.getElementById('statUrgente').textContent = itens.filter(i => i.prioridade === 'urgente').length;
-            document.getElementById('countBadge').textContent = `${itens.length} ${itens.length === 1 ? 'registro' : 'registros'}`;
+            if (p === 'critico') return { label: 'Crítico', cls: 'badge-critico' };
+            if (p === 'urgente') return { label: 'Urgente', cls: 'badge-urgente' };
+            return { label: 'Rotina', cls: 'badge-rotina' };
         }
 
         function renderizarFila() {
             const itens = BackendArrayCRUD.read();
-            atualizarEstatisticas(itens);
-
             if (itens.length === 0) {
-                listaDiv.innerHTML = '<div class="empty">Nenhum paciente na fila de atendimento no momento.</div>';
+                listaDiv.innerHTML = '<div class="empty">Nenhum paciente na fila.</div>';
                 return;
             }
-
             listaDiv.innerHTML = itens.map(p => {
                 const badge = traduzirPrioridade(p.prioridade);
                 return `
-                    <article class="card">
-                        <div class="card-top">
-                            <div class="card-main">
-                                <h3>${escapeHtml(p.nome)} <small>• ${escapeHtml(p.especie)}</small></h3>
-                            </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>${escapeHtml(p.nome)} <span class="spec">• ${escapeHtml(p.especie)}</span></h3>
                             <span class="badge ${badge.cls}">${badge.label}</span>
                         </div>
-                        <div class="card-meta">
+                        <div class="card-body">
                             <span>Tutor: <strong>${escapeHtml(p.tutor)}</strong></span>
+                            <span>Queixa: ${escapeHtml(p.queixa)}</span>
                         </div>
-                        <p style="font-size:0.9rem; color: var(--text); padding: 0 2px;">
-                            <strong style="color:var(--text-muted); font-size:0.75rem; text-transform:uppercase; display:block; margin-bottom:2px;">Queixa:</strong>
-                            ${escapeHtml(p.queixa)}
-                        </p>
                         <div class="card-actions">
-                            <button type="button" class="btn-action btn-edit" onclick="iniciarEdicao('${p.id}')">Editar</button>
-                            <button type="button" class="btn-action btn-delete" onclick="removerItem('${p.id}')">Alta / Remover</button>
+                            <button class="btn-action btn-edit" onclick="iniciarEdicao('${p.id}')">Editar</button>
+                            <button class="btn-action btn-delete" onclick="removerItem('${p.id}')">Alta</button>
                         </div>
-                    </article>
+                    </div>
                 `;
             }).join('');
         }
 
         function escapeHtml(str) {
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
+            return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','quot;':'&quot;',"'":'&#039;'}[m]));
         }
 
         form.addEventListener('submit', (e) => {
@@ -537,13 +345,14 @@
             };
 
             if (!id) {
-                BackendArrayCRUD.create(payload); // Create
+                BackendArrayCRUD.create(payload);
             } else {
-                BackendArrayCRUD.update(id, payload); // Update
-                cancelarEdicao(false);
+                BackendArrayCRUD.update(id, payload);
+                document.getElementById('petId').value = '';
+                btnSubmit.textContent = 'Adicionar à Fila';
             }
             form.reset();
-            renderizarFila(); // Read refresh
+            renderizarFila();
         });
 
         window.iniciarEdicao = function(id) {
@@ -555,30 +364,17 @@
             document.getElementById('tutor').value = item.tutor;
             document.getElementById('prioridade').value = item.prioridade;
             document.getElementById('queixa').value = item.queixa;
-            
-            formTitleText.textContent = 'Editar Ficha (Update)';
-            btnSubmit.textContent = 'Salvar Alterações';
-            btnCancel.classList.add('visible');
-            
-            window.scrollTo({ top: form.offsetTop - 16, behavior: 'smooth' });
-        };
-
-        window.cancelarEdicao = function(resetForm = true) {
-            document.getElementById('petId').value = '';
-            formTitleText.textContent = 'Nova Ficha (Create)';
-            btnSubmit.textContent = 'Adicionar à Fila';
-            btnCancel.classList.remove('visible');
-            if (resetForm) form.reset();
+            btnSubmit.textContent = 'Atualizar Ficha';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.removerItem = function(id) {
-            if (window.innerWidth <= 600 ? confirm('Confirmar alta do paciente?') : confirm('Dar alta / remover paciente da fila de atendimento?')) {
-                BackendArrayCRUD.delete(id); // Delete
+            if (confirm('Dar alta / remover paciente?')) {
+                BackendArrayCRUD.delete(id);
                 renderizarFila();
             }
         };
 
-        // Renderização inicial
         renderizarFila();
     </script>
 </body>
