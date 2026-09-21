@@ -1,250 +1,435 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>PetLover — Triagem Clínica (OAT1)</title>
     <style>
-         :root {
+        :root {
             --primary: #0d9488;
             --primary-hover: #0f766e;
+            --primary-light: #ccfbf1;
             --bg: #f8fafc;
             --surface: #ffffff;
             --text: #0f172a;
             --text-muted: #475569;
-            --border: #cbd5e1;
+            --border: #e2e8f0;
+            --border-focus: #0d9488;
             --danger: #e11d48;
+            --danger-bg: #ffe4e6;
             --warning: #d97706;
+            --warning-bg: #fef3c7;
+            --info: #0284c7;
+            --info-bg: #e0f2fe;
+            --radius: 10px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
         }
-        
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        
+
         body {
-            background: var(--bg);
+            background-color: var(--bg);
             color: var(--text);
-            padding: 32px 16px;
-            max-width: 900px;
+            line-height: 1.5;
+            padding: 16px 12px 48px;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
             margin: 0 auto;
         }
-        
+
+        /* Header responsivo */
         header {
-            margin-bottom: 24px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 12px;
+            margin-bottom: 20px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        h1 {
-            font-size: 1.5rem;
-            color: var(--primary);
-        }
-        
-        .author {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-        
-        form {
+            flex-direction: column;
+            gap: 4px;
             background: var(--surface);
-            padding: 20px;
+            padding: 18px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+        }
+
+        .author {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Métricas rápidas da fila */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 10px 8px;
             border-radius: 8px;
             border: 1px solid var(--border);
-            display: grid;
-            gap: 12px;
-            margin-bottom: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            text-align: center;
         }
-        
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+
+        .stat-card span {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
         }
-        
-        input,
-        select,
-        textarea,
-        button {
-            padding: 10px 12px;
+
+        .stat-card strong {
+            font-size: 1.15rem;
+            color: var(--text);
+        }
+
+        /* Formulário Mobile-First */
+        form {
+            background: var(--surface);
+            padding: 18px;
+            border-radius: var(--radius);
             border: 1px solid var(--border);
-            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-title {
             font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        
-        input:focus,
-        select:focus,
-        textarea:focus {
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: #fff;
+            color: var(--text);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
         }
-        
+
         textarea {
             resize: vertical;
-            height: 60px;
-            grid-column: span 2;
+            min-height: 70px;
         }
-        
-        button.btn-save {
-            background: var(--primary);
-            color: white;
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        button {
             border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.15s;
-            grid-column: span 2;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 46px; /* Alvo tátil ideal para telemóveis */
         }
-        
-        button.btn-save:hover {
+
+        .btn-save {
+            background: var(--primary);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-save:active {
+            transform: scale(0.99);
             background: var(--primary-hover);
         }
-        
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: var(--text-muted);
+            padding: 0 16px;
+            display: none;
+        }
+
+        .btn-cancel.visible {
+            display: inline-flex;
+        }
+
+        /* Lista de Cards da Fila */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+
+        .section-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .list-container {
-            display: grid;
+            display: flex;
+            flex-direction: column;
             gap: 12px;
         }
-        
+
         .card {
             background: var(--surface);
             padding: 16px;
-            border-radius: 8px;
+            border-radius: var(--radius);
             border: 1px solid var(--border);
+            box-shadow: var(--shadow);
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
         }
-        
+
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
         .card-main h3 {
             font-size: 1rem;
-            margin-bottom: 4px;
-            display: flex;
-            gap: 8px;
-            align-items: center;
+            color: var(--text);
+            line-height: 1.3;
         }
-        
-        .card-main p {
-            font-size: 0.85rem;
+
+        .card-main h3 small {
+            font-weight: 400;
             color: var(--text-muted);
-            margin-top: 2px;
+            font-size: 0.85rem;
         }
-        
+
         .badge {
             font-size: 0.7rem;
             font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 4px;
+            padding: 3px 10px;
+            border-radius: 999px;
             text-transform: uppercase;
+            white-space: nowrap;
         }
-        
-        .badge-critico {
-            background: #ffe4e6;
-            color: var(--danger);
+
+        .badge-critico { background: var(--danger-bg); color: var(--danger); }
+        .badge-urgente { background: var(--warning-bg); color: var(--warning); }
+        .badge-rotina { background: var(--info-bg); color: var(--info); }
+
+        .card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 6px;
         }
-        
-        .badge-urgente {
-            background: #fef3c7;
-            color: var(--warning);
+
+        .card-meta span strong {
+            color: var(--text);
         }
-        
-        .badge-rotina {
-            background: #e0f2fe;
-            color: #0284c7;
-        }
-        
+
         .card-actions {
             display: flex;
-            gap: 6px;
+            gap: 8px;
+            padding-top: 4px;
+            border-top: 1px solid var(--border);
         }
-        
+
         .btn-action {
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            cursor: pointer;
+            flex: 1;
+            min-height: 40px;
+            font-size: 0.85rem;
+            border-radius: 6px;
             border: 1px solid var(--border);
             background: white;
-            font-weight: 500;
+            font-weight: 600;
         }
-        
-        .btn-edit {
-            color: #334155;
-        }
-        
-        .btn-edit:hover {
-            background: #f1f5f9;
-        }
-        
-        .btn-delete {
-            color: var(--danger);
-            border-color: #fecaca;
-        }
-        
-        .btn-delete:hover {
-            background: #ffe4e6;
-        }
-        
+
+        .btn-edit { color: var(--text); background: #f8fafc; }
+        .btn-edit:active { background: #f1f5f9; }
+
+        .btn-delete { color: var(--danger); border-color: #fecaca; background: #fff5f5; }
+        .btn-delete:active { background: #ffe4e6; }
+
         .empty {
             text-align: center;
             color: var(--text-muted);
-            padding: 32px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid var(--border);
+            padding: 40px 16px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px dashed var(--border);
+            font-size: 0.9rem;
+        }
+
+        /* Desktop Breakpoint */
+        @media (min-width: 600px) {
+            body { padding: 32px 20px 64px; }
+            .grid-2 { grid-template-columns: 1fr 1fr; }
+            .card-actions { justify-content: flex-end; }
+            .btn-action { flex: initial; padding: 0 18px; }
         }
     </style>
 </head>
-
 <body>
 
-    <header>
-        <h1>🐾 PetLover — Triagem Clínica</h1>
-        <div class="author">Gustavo Braga</div>
-    </header>
+    <div class="container">
+        <header>
+            <div class="brand">
+                <h1>🐾 PetLover</h1>
+                <span class="author">Gustavo Braga</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Módulo de Triagem Clínica Veterinária (OAT1)</p>
+        </header>
 
-    <form id="petForm">
-        <input type="hidden" id="petId">
-        <div class="row">
-            <input type="text" id="nome" placeholder="Nome do Pet (Ex: Mel)" required>
-            <select id="especie">
-                <option value="Canino">Canino</option>
-                <option value="Felino">Felino</option>
-                <option value="Outro">Outro</option>
-            </select>
+        <!-- Métricas Dinâmicas -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <span>Total</span>
+                <strong id="statTotal">0</strong>
+            </div>
+            <div class="stat-card">
+                <span>Críticos</span>
+                <strong id="statCritico" style="color: var(--danger);">0</strong>
+            </div>
+            <div class="stat-card">
+                <span>Urgentes</span>
+                <strong id="statUrgente" style="color: var(--warning);">0</strong>
+            </div>
         </div>
-        <div class="row">
-            <input type="text" id="tutor" placeholder="Nome do Tutor" required>
-            <select id="prioridade">
-                <option value="rotina">Rotina / Verde</option>
-                <option value="urgente">Urgente / Amarelo</option>
-                <option value="critico">Crítico / Vermelho</option>
-            </select>
-        </div>
-        <textarea id="queixa" placeholder="Queixa principal / Sintomas..." required></textarea>
-        <button type="submit" class="btn-save" id="btnSubmit">Adicionar à Fila (Create)</button>
-    </form>
 
-    <div id="listaPets" class="list-container"></div>
+        <!-- Formulário C/U -->
+        <form id="petForm">
+            <div class="form-title">
+                <span id="formTitleText">Nova Ficha (Create)</span>
+            </div>
+            <input type="hidden" id="petId">
+            <div class="grid-2">
+                <div class="field-group">
+                    <label for="nome">Nome do Pet</label>
+                    <input type="text" id="nome" placeholder="Ex: Mel" required autocomplete="off">
+                </div>
+                <div class="field-group">
+                    <label for="especie">Espécie</label>
+                    <select id="especie">
+                        <option value="Canino">Canino</option>
+                        <option value="Felino">Felino</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="field-group">
+                    <label for="tutor">Nome do Tutor</label>
+                    <input type="text" id="tutor" placeholder="Ex: Carlos Silva" required autocomplete="off">
+                </div>
+                <div class="field-group">
+                    <label for="prioridade">Prioridade de Atendimento</label>
+                    <select id="prioridade">
+                        <option value="rotina">Rotina / Verde</option>
+                        <option value="urgente">Urgente / Amarelo</option>
+                        <option value="critico">Crítico / Vermelho</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field-group">
+                <label for="queixa">Queixa Principal / Sintomas</label>
+                <textarea id="queixa" placeholder="Descreva o motivo da consulta..." required></textarea>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn-cancel" id="btnCancel" onclick="cancelarEdicao()">Cancelar</button>
+                <button type="submit" class="btn-save" id="btnSubmit">Adicionar à Fila</button>
+            </div>
+        </form>
+
+        <!-- Lista R/D -->
+        <section>
+            <div class="section-header">
+                <h2>Fila de Atendimento</h2>
+                <span id="countBadge" style="font-size:0.8rem; font-weight:600; color:var(--text-muted);">0 registros</span>
+            </div>
+            <div id="listaPets" class="list-container"></div>
+        </section>
+    </div>
 
     <script>
-        // BACK-END SIMULADO (Funções puras com Array)
+        // ==========================================
+        // BACK-END SIMULADO (Array & Funções Puras)
+        // ==========================================
         let dbArray = [];
 
         const BackendArrayCRUD = {
             create(item) {
-                const novo = {
-                    id: String(Date.now()),
-                    ...item
-                };
-                dbArray.push(novo);
+                const novo = { id: String(Date.now()), createdAt: Date.now(), ...item };
+                dbArray.unshift(novo); // Insere no topo da fila
                 return novo;
             },
             read() {
@@ -253,9 +438,7 @@
             update(id, dadosAtualizados) {
                 const index = dbArray.findIndex(p => p.id === id);
                 if (index !== -1) {
-                    dbArray[index] = {...dbArray[index],
-                        ...dadosAtualizados
-                    };
+                    dbArray[index] = { ...dbArray[index], ...dadosAtualizados };
                     return dbArray[index];
                 }
                 return null;
@@ -267,67 +450,79 @@
             }
         };
 
-        // Registo inicial de exemplo
-        BackendArrayCRUD.create({
-            nome: 'Thor',
-            especie: 'Canino',
-            tutor: 'Carlos Silva',
-            prioridade: 'urgente',
-            queixa: 'Vômito e apatia'
+        // Seed inicial demonstrativo
+        BackendArrayCRUD.create({ 
+            nome: 'Thor', 
+            especie: 'Canino', 
+            tutor: 'Carlos Silva', 
+            prioridade: 'urgente', 
+            queixa: 'Vômito recorrente e apatia leve há 4h.' 
         });
 
-        // FRONT-END
+        // ==========================================
+        // FRONT-END & UI RESPONSIVA
+        // ==========================================
         const form = document.getElementById('petForm');
         const listaDiv = document.getElementById('listaPets');
         const btnSubmit = document.getElementById('btnSubmit');
+        const btnCancel = document.getElementById('btnCancel');
+        const formTitleText = document.getElementById('formTitleText');
 
         function traduzirPrioridade(p) {
-            if (p === 'critico') return {
-                label: 'Crítico / Vermelho',
-                cls: 'badge-critico'
-            };
-            if (p === 'urgente') return {
-                label: 'Urgente / Amarelo',
-                cls: 'badge-urgente'
-            };
-            return {
-                label: 'Rotina / Verde',
-                cls: 'badge-rotina'
-            };
+            if (p === 'critico') return { label: 'Crítico / Vermelho', cls: 'badge-critico' };
+            if (p === 'urgente') return { label: 'Urgente / Amarelo', cls: 'badge-urgente' };
+            return { label: 'Rotina / Verde', cls: 'badge-rotina' };
+        }
+
+        function atualizarEstatisticas(itens) {
+            document.getElementById('statTotal').textContent = itens.length;
+            document.getElementById('statCritico').textContent = itens.filter(i => i.prioridade === 'critico').length;
+            document.getElementById('statUrgente').textContent = itens.filter(i => i.prioridade === 'urgente').length;
+            document.getElementById('countBadge').textContent = `${itens.length} ${itens.length === 1 ? 'registro' : 'registros'}`;
         }
 
         function renderizarFila() {
             const itens = BackendArrayCRUD.read();
+            atualizarEstatisticas(itens);
+
             if (itens.length === 0) {
-                listaDiv.innerHTML = '<div class="empty">Nenhum paciente registado na fila de atendimento.</div>';
+                listaDiv.innerHTML = '<div class="empty">Nenhum paciente na fila de atendimento no momento.</div>';
                 return;
             }
+
             listaDiv.innerHTML = itens.map(p => {
                 const badge = traduzirPrioridade(p.prioridade);
                 return `
-                    <div class="card">
-                        <div class="card-main">
-                            <h3><span class="badge ${badge.cls}">${badge.label}</span> ${escapeHtml(p.nome)} <small style="font-weight:400;color:var(--text-muted);">(${escapeHtml(p.especie)})</small></h3>
-                            <p>Tutor: <strong>${escapeHtml(p.tutor)}</strong></p>
-                            <p style="margin-top:4px; font-size:0.8rem;">Queixa: ${escapeHtml(p.queixa)}</p>
+                    <article class="card">
+                        <div class="card-top">
+                            <div class="card-main">
+                                <h3>${escapeHtml(p.nome)} <small>• ${escapeHtml(p.especie)}</small></h3>
+                            </div>
+                            <span class="badge ${badge.cls}">${badge.label}</span>
                         </div>
+                        <div class="card-meta">
+                            <span>Tutor: <strong>${escapeHtml(p.tutor)}</strong></span>
+                        </div>
+                        <p style="font-size:0.9rem; color: var(--text); padding: 0 2px;">
+                            <strong style="color:var(--text-muted); font-size:0.75rem; text-transform:uppercase; display:block; margin-bottom:2px;">Queixa:</strong>
+                            ${escapeHtml(p.queixa)}
+                        </p>
                         <div class="card-actions">
-                            <button class="btn-action btn-edit" onclick="iniciarEdicao('${p.id}')">Editar</button>
-                            <button class="btn-action btn-delete" onclick="removerItem('${p.id}')">Alta</button>
+                            <button type="button" class="btn-action btn-edit" onclick="iniciarEdicao('${p.id}')">Editar</button>
+                            <button type="button" class="btn-action btn-delete" onclick="removerItem('${p.id}')">Alta / Remover</button>
                         </div>
-                    </div>
+                    </article>
                 `;
             }).join('');
         }
 
         function escapeHtml(str) {
-            return String(str).replace(/[&<>"']/g, m => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                'quot;': '&quot;',
-                "'": '&#039;'
-            }[m]));
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         form.addEventListener('submit', (e) => {
@@ -345,11 +540,10 @@
                 BackendArrayCRUD.create(payload); // Create
             } else {
                 BackendArrayCRUD.update(id, payload); // Update
-                document.getElementById('petId').value = '';
-                btnSubmit.textContent = 'Adicionar à Fila (Create)';
+                cancelarEdicao(false);
             }
             form.reset();
-            renderizarFila(); // Read (refresh)
+            renderizarFila(); // Read refresh
         });
 
         window.iniciarEdicao = function(id) {
@@ -361,22 +555,31 @@
             document.getElementById('tutor').value = item.tutor;
             document.getElementById('prioridade').value = item.prioridade;
             document.getElementById('queixa').value = item.queixa;
-            btnSubmit.textContent = 'Atualizar Ficha (Update)';
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            
+            formTitleText.textContent = 'Editar Ficha (Update)';
+            btnSubmit.textContent = 'Salvar Alterações';
+            btnCancel.classList.add('visible');
+            
+            window.scrollTo({ top: form.offsetTop - 16, behavior: 'smooth' });
+        };
+
+        window.cancelarEdicao = function(resetForm = true) {
+            document.getElementById('petId').value = '';
+            formTitleText.textContent = 'Nova Ficha (Create)';
+            btnSubmit.textContent = 'Adicionar à Fila';
+            btnCancel.classList.remove('visible');
+            if (resetForm) form.reset();
         };
 
         window.removerItem = function(id) {
-            if (confirm('Dar alta / remover paciente da fila?')) {
+            if (window.innerWidth <= 600 ? confirm('Confirmar alta do paciente?') : confirm('Dar alta / remover paciente da fila de atendimento?')) {
                 BackendArrayCRUD.delete(id); // Delete
                 renderizarFila();
             }
         };
 
+        // Renderização inicial
         renderizarFila();
     </script>
 </body>
-
 </html>
