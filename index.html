@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetLover — Recepção e Triagem Clínica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-hover: #0f766e;
+            --secondary: #64748b;
+            --background: #f1f5f9;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border: #cbd5e1;
+            --danger: #e11d48;
+            --warning: #d97706;
+            --radius: 8px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--background); color: var(--text-main); line-height: 1.5; padding: 32px 16px; }
+        .app-shell { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 380px 1fr; gap: 24px; }
+        @media (max-width: 860px) { .app-shell { grid-template-columns: 1fr; } }
+
+        header { grid-column: 1 / -1; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 16px; }
+        header h1 { font-size: 1.5rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+        header h1 i { color: var(--primary); }
+        header span { font-size: 0.85rem; background: #ccfbf1; color: var(--primary-hover); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+
+        .card { background-color: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; height: fit-content; }
+        .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
+
+        .form-grid { display: grid; gap: 12px; }
+        .form-field { display: flex; flex-direction: column; gap: 4px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); }
+        input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 0.9rem; color: var(--text-main); background: #fff; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15); }
+        textarea { resize: vertical; height: 64px; }
+
+        .form-actions { display: flex; gap: 8px; margin-top: 16px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; border-radius: 6px; font-size: 0.875rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
+        .btn-primary { background-color: var(--primary); color: white; flex: 1; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background: transparent; border-color: var(--border); color: var(--text-muted); }
+        .btn-secondary:hover { background: #f8fafc; color: var(--text-main); }
+
+        .queue-container { display: flex; flex-direction: column; gap: 12px; }
+        .patient-card { border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: white; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; transition: border-color 0.15s; }
+        .patient-card:hover { border-color: #94a3b8; }
+        
+        .priority-badge { font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; display: inline-block; margin-bottom: 6px; }
+        .priority-critico { background: #ffe4e6; color: var(--danger); }
+        .priority-urgente { background: #fef3c7; color: var(--warning); }
+        .priority-rotina { background: #e0f2fe; color: #0284c7; }
+
+        .patient-info h3 { font-size: 1rem; font-weight: 600; }
+        .patient-meta { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+        .patient-complaint { font-size: 0.85rem; background: #f8fafc; padding: 8px 10px; border-radius: 6px; margin-top: 8px; border-left: 3px solid var(--primary); color: var(--text-main); }
+
+        .patient-controls { display: flex; gap: 6px; }
+        .btn-icon { width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border); background: white; color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-icon:hover { background: #f1f5f9; color: var(--text-main); }
+        .btn-icon.danger:hover { background: #ffe4e6; border-color: #fecaca; color: var(--danger); }
+
+        .empty-state { text-align: center; padding: 48px 16px; color: var(--text-muted); font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <header>
+            <h1><i class="ri-hospital-line"></i> PetLover — Recepção e Triagem</h1>
+            <span>Plantão 24h</span>
+        </header>
+
+        <aside class="card">
+            <h2 class="card-title" id="form-heading"><i class="ri-clipboard-line"></i> Registar Entrada</h2>
+            <form id="patient-form">
+                <input type="hidden" id="patient-id">
+                <div class="form-grid">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="pet-name">Nome do Paciente</label>
+                            <input type="text" id="pet-name" placeholder="Ex: Mel" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="pet-species">Espécie</label>
+                            <select id="pet-species" required>
+                                <option value="Canino">Canino</option>
+                                <option value="Felino">Felino</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="pet-breed">Raça</label>
+                            <input type="text" id="pet-breed" placeholder="Ex: SRD">
+                        </div>
+                        <div class="form-field">
+                            <label for="pet-weight">Peso (kg)</label>
+                            <input type="number" step="0.1" id="pet-weight" placeholder="Ex: 8.5" required>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="tutor-name">Nome do Tutor</label>
+                        <input type="text" id="tutor-name" placeholder="Ex: Carlos Silva" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="pet-temp">Temp. (°C)</label>
+                            <input type="number" step="0.1" id="pet-temp" placeholder="Ex: 38.5">
+                        </div>
+                        <div class="form-field">
+                            <label for="triage-priority">Prioridade</label>
+                            <select id="triage-priority" required>
+                                <option value="rotina">Rotina / Verde</option>
+                                <option value="urgente">Urgente / Amarelo</option>
+                                <option value="critico">Crítico / Vermelho</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="main-complaint">Queixa Principal / Sintomas</label>
+                        <textarea id="main-complaint" placeholder="Descreva o motivo da consulta..." required></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel" style="display: none;" onclick="cancelarEdicao()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit">Guardar Ficha</button>
+                </div>
+            </form>
+        </aside>
+
+        <main class="card">
+            <h2 class="card-title"><i class="ri-pulse-line"></i> Fila de Pacientes no Estabelecimento</h2>
+            <div id="patient-queue" class="queue-container">
+                <div class="empty-state">A carregar fila de triagem...</div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/pets';
+        const form = document.getElementById('patient-form');
+        const queueContainer = document.getElementById('patient-queue');
+        const formHeading = document.getElementById('form-heading');
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnCancel = document.getElementById('btn-cancel');
+
+        const inputId = document.getElementById('patient-id');
+        const inputName = document.getElementById('pet-name');
+        const inputSpecies = document.getElementById('pet-species');
+        const inputBreed = document.getElementById('pet-breed');
+        const inputWeight = document.getElementById('pet-weight');
+        const inputTutor = document.getElementById('tutor-name');
+        const inputTemp = document.getElementById('pet-temp');
+        const inputPriority = document.getElementById('triage-priority');
+        const inputComplaint = document.getElementById('main-complaint');
+
+        window.pacientesMap = {};
+
+        function escaparHtml(texto) {
+            if (!texto) return '';
+            return String(texto)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function traduzirPrioridade(prio) {
+            switch(prio) {
+                case 'critico': return { label: 'Crítico (Emergência)', class: 'priority-critico' };
+                case 'urgente': return { label: 'Urgente (Prioritário)', class: 'priority-urgente' };
+                default: return { label: 'Rotina / Ambulatorial', class: 'priority-rotina' };
+            }
+        }
+
+        async function carregarFila() {
+            try {
+                queueContainer.innerHTML = '<div class="empty-state">A atualizar fila...</div>';
+                const resposta = await fetch(API_BASE_URL);
+                if (!resposta.ok) throw new Error('Falha na comunicação com o servidor');
+                const pets = await resposta.json();
+
+                window.pacientesMap = {};
+
+                if (!Array.isArray(pets) || pets.length === 0) {
+                    queueContainer.innerHTML = '<div class="empty-state">Sem pacientes registados na fila de atendimento.</div>';
+                    return;
+                }
+
+                queueContainer.innerHTML = pets.map(p => {
+                    const idSeguro = p.id;
+                    window.pacientesMap[idSeguro] = p;
+                    const badge = traduzirPrioridade(p.prioridade || 'rotina');
+                    return `
+                        <div class="patient-card">
+                            <div>
+                                <span class="priority-badge ${badge.class}">${badge.label}</span>
+                                <h3>${escaparHtml(p.nome)} <small style="font-weight:400; font-size:0.8rem; color:var(--text-muted);">(${escaparHtml(p.especie)}, ${escaparHtml(p.raca || 'SRD')})</small></h3>
+                                <div class="patient-meta">
+                                    Tutor: <strong>${escaparHtml(p.tutor)}</strong> &bull; Peso: ${p.peso}kg ${p.temperatura ? `&bull; Temp: ${p.temperatura}°C` : ''}
+                                </div>
+                                <div class="patient-complaint">
+                                    <strong>Queixa:</strong> ${escaparHtml(p.queixa)}
+                                </div>
+                            </div>
+                            <div class="patient-controls">
+                                <button type="button" class="btn-icon" title="Editar Ficha" onclick="iniciarEdicaoPorId('${idSeguro}')">
+                                    <i class="ri-edit-line"></i>
+                                </button>
+                                <button type="button" class="btn-icon danger" title="Alta / Remover" onclick="removerPaciente('${idSeguro}')">
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (erro) {
+                console.error(erro);
+                queueContainer.innerHTML = '<div class="empty-state" style="color: var(--danger);">Erro de ligação ao servidor (porta 3000).</div>';
+            }
+        }
+
+        function iniciarEdicaoPorId(id) {
+            const pet = window.pacientesMap[id];
+            if (!pet) return;
+
+            inputId.value = id;
+            inputName.value = pet.nome || '';
+            inputSpecies.value = pet.especie || 'Canino';
+            inputBreed.value = pet.raca || '';
+            inputWeight.value = pet.peso || '';
+            inputTutor.value = pet.tutor || '';
+            inputTemp.value = pet.temperatura || '';
+            inputPriority.value = pet.prioridade || 'rotina';
+            inputComplaint.value = pet.queixa || '';
+
+            formHeading.innerHTML = '<i class="ri-edit-box-line"></i> Editar Ficha Clínica';
+            btnSubmit.textContent = 'Atualizar Ficha';
+            btnCancel.style.display = 'inline-flex';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelarEdicao() {
+            form.reset();
+            inputId.value = '';
+            formHeading.innerHTML = '<i class="ri-clipboard-line"></i> Registar Entrada';
+            btnSubmit.textContent = 'Guardar Ficha';
+            btnCancel.style.display = 'none';
+        }
+
+        form.addEventListener('submit', async (evento) => {
+            evento.preventDefault();
+            const id = inputId.value;
+            const payload = {
+                nome: inputName.value.trim(),
+                especie: inputSpecies.value,
+                raca: inputBreed.value.trim(),
+                peso: Number(inputWeight.value),
+                tutor: inputTutor.value.trim(),
+                temperatura: inputTemp.value ? Number(inputTemp.value) : null,
+                prioridade: inputPriority.value,
+                queixa: inputComplaint.value.trim()
+            };
+
+            try {
+                const metodo = id ? 'PUT' : 'POST';
+                const url = id ? `${API_BASE_URL}/${id}` : API_BASE_URL;
+
+                const resposta = await fetch(url, {
+                    method: metodo,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!resposta.ok) throw new Error('Falha ao gravar ficha');
+
+                cancelarEdicao();
+                carregarFila();
+            } catch (erro) {
+                console.error(erro);
+                alert('Ocorreu um erro ao guardar o registo clínico.');
+            }
+        });
+
+        async function removerPaciente(id) {
+            if (!confirm('Dar alta / remover este paciente da fila ativa?')) return;
+
+            try {
+                const resposta = await fetch(`${API_BASE_URL}/${id}`, { method: 'DELETE' });
+                if (!resposta.ok) throw new Error('Falha ao remover');
+                carregarFila();
+            } catch (erro) {
+                console.error(erro);
+                alert('Não foi possível remover o registo.');
+            }
+        }
+
+        window.iniciarEdicaoPorId = iniciarEdicaoPorId;
+        window.removerPaciente = removerPaciente;
+        window.cancelarEdicao = cancelarEdicao;
+
+        carregarFila();
+    </script>
+</body>
+</html>
