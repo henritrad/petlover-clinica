@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetLover — Triagem Clínica (OAT1)</title>
+    <style>
+         :root {
+            --primary: #0d9488;
+            --primary-hover: #0f766e;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --text-muted: #475569;
+            --border: #cbd5e1;
+            --danger: #e11d48;
+            --warning: #d97706;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: var(--bg);
+            color: var(--text);
+            padding: 32px 16px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .author {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        form {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: grid;
+            gap: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        input,
+        select,
+        textarea,
+        button {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        textarea {
+            resize: vertical;
+            height: 60px;
+            grid-column: span 2;
+        }
+        
+        button.btn-save {
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.15s;
+            grid-column: span 2;
+        }
+        
+        button.btn-save:hover {
+            background: var(--primary-hover);
+        }
+        
+        .list-container {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .card {
+            background: var(--surface);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-main h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .card-main p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        
+        .badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        
+        .badge-critico {
+            background: #ffe4e6;
+            color: var(--danger);
+        }
+        
+        .badge-urgente {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+        
+        .badge-rotina {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: white;
+            font-weight: 500;
+        }
+        
+        .btn-edit {
+            color: #334155;
+        }
+        
+        .btn-edit:hover {
+            background: #f1f5f9;
+        }
+        
+        .btn-delete {
+            color: var(--danger);
+            border-color: #fecaca;
+        }
+        
+        .btn-delete:hover {
+            background: #ffe4e6;
+        }
+        
+        .empty {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 32px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>🐾 PetLover — Triagem Clínica</h1>
+        <div class="author">Gustavo Braga</div>
+    </header>
+
+    <form id="petForm">
+        <input type="hidden" id="petId">
+        <div class="row">
+            <input type="text" id="nome" placeholder="Nome do Pet (Ex: Mel)" required>
+            <select id="especie">
+                <option value="Canino">Canino</option>
+                <option value="Felino">Felino</option>
+                <option value="Outro">Outro</option>
+            </select>
+        </div>
+        <div class="row">
+            <input type="text" id="tutor" placeholder="Nome do Tutor" required>
+            <select id="prioridade">
+                <option value="rotina">Rotina / Verde</option>
+                <option value="urgente">Urgente / Amarelo</option>
+                <option value="critico">Crítico / Vermelho</option>
+            </select>
+        </div>
+        <textarea id="queixa" placeholder="Queixa principal / Sintomas..." required></textarea>
+        <button type="submit" class="btn-save" id="btnSubmit">Adicionar à Fila (Create)</button>
+    </form>
+
+    <div id="listaPets" class="list-container"></div>
+
+    <script>
+        // BACK-END SIMULADO (Funções puras com Array)
+        let dbArray = [];
+
+        const BackendArrayCRUD = {
+            create(item) {
+                const novo = {
+                    id: String(Date.now()),
+                    ...item
+                };
+                dbArray.push(novo);
+                return novo;
+            },
+            read() {
+                return [...dbArray];
+            },
+            update(id, dadosAtualizados) {
+                const index = dbArray.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    dbArray[index] = {...dbArray[index],
+                        ...dadosAtualizados
+                    };
+                    return dbArray[index];
+                }
+                return null;
+            },
+            delete(id) {
+                const initialLen = dbArray.length;
+                dbArray = dbArray.filter(p => p.id !== id);
+                return dbArray.length < initialLen;
+            }
+        };
+
+        // Registo inicial de exemplo
+        BackendArrayCRUD.create({
+            nome: 'Thor',
+            especie: 'Canino',
+            tutor: 'Carlos Silva',
+            prioridade: 'urgente',
+            queixa: 'Vômito e apatia'
+        });
+
+        // FRONT-END
+        const form = document.getElementById('petForm');
+        const listaDiv = document.getElementById('listaPets');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        function traduzirPrioridade(p) {
+            if (p === 'critico') return {
+                label: 'Crítico / Vermelho',
+                cls: 'badge-critico'
+            };
+            if (p === 'urgente') return {
+                label: 'Urgente / Amarelo',
+                cls: 'badge-urgente'
+            };
+            return {
+                label: 'Rotina / Verde',
+                cls: 'badge-rotina'
+            };
+        }
+
+        function renderizarFila() {
+            const itens = BackendArrayCRUD.read();
+            if (itens.length === 0) {
+                listaDiv.innerHTML = '<div class="empty">Nenhum paciente registado na fila de atendimento.</div>';
+                return;
+            }
+            listaDiv.innerHTML = itens.map(p => {
+                const badge = traduzirPrioridade(p.prioridade);
+                return `
+                    <div class="card">
+                        <div class="card-main">
+                            <h3><span class="badge ${badge.cls}">${badge.label}</span> ${escapeHtml(p.nome)} <small style="font-weight:400;color:var(--text-muted);">(${escapeHtml(p.especie)})</small></h3>
+                            <p>Tutor: <strong>${escapeHtml(p.tutor)}</strong></p>
+                            <p style="margin-top:4px; font-size:0.8rem;">Queixa: ${escapeHtml(p.queixa)}</p>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-action btn-edit" onclick="iniciarEdicao('${p.id}')">Editar</button>
+                            <button class="btn-action btn-delete" onclick="removerItem('${p.id}')">Alta</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, m => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                'quot;': '&quot;',
+                "'": '&#039;'
+            }[m]));
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('petId').value;
+            const payload = {
+                nome: document.getElementById('nome').value.trim(),
+                especie: document.getElementById('especie').value,
+                tutor: document.getElementById('tutor').value.trim(),
+                prioridade: document.getElementById('prioridade').value,
+                queixa: document.getElementById('queixa').value.trim()
+            };
+
+            if (!id) {
+                BackendArrayCRUD.create(payload); // Create
+            } else {
+                BackendArrayCRUD.update(id, payload); // Update
+                document.getElementById('petId').value = '';
+                btnSubmit.textContent = 'Adicionar à Fila (Create)';
+            }
+            form.reset();
+            renderizarFila(); // Read (refresh)
+        });
+
+        window.iniciarEdicao = function(id) {
+            const item = BackendArrayCRUD.read().find(p => p.id === id);
+            if (!item) return;
+            document.getElementById('petId').value = item.id;
+            document.getElementById('nome').value = item.nome;
+            document.getElementById('especie').value = item.especie;
+            document.getElementById('tutor').value = item.tutor;
+            document.getElementById('prioridade').value = item.prioridade;
+            document.getElementById('queixa').value = item.queixa;
+            btnSubmit.textContent = 'Atualizar Ficha (Update)';
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        };
+
+        window.removerItem = function(id) {
+            if (confirm('Dar alta / remover paciente da fila?')) {
+                BackendArrayCRUD.delete(id); // Delete
+                renderizarFila();
+            }
+        };
+
+        renderizarFila();
+    </script>
+</body>
+
+</html>
